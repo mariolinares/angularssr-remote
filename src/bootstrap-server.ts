@@ -38,10 +38,12 @@ export function app(): express.Express {
     express.static(browserDistFolder, {
       maxAge: '1y',
       index: 'index.html',
-      setHeaders: (res, path) => {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        
-      }
+      setHeaders: (req, res, path) => {
+        if (path.endsWith('.json')) {
+          console.log('jsonremote', req);
+        }
+        req.setHeader('origin', 'https://angularssr-host.netlify.app');
+      },
     })
   );
 
