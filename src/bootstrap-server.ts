@@ -1,25 +1,71 @@
-import { createRequire } from "module";
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const cors = require("cors"); 
-// Error: server.ts doesn't seem to be Netlify compatible and is not known default. Please replace it with Netlify compatible server.ts.
+const cors = require('cors');
+import { APP_BASE_HREF } from '@angular/common';
+import { CommonEngine, isMainModule } from '@angular/ssr/node';
+import express from 'express';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import bootstrap from './main.server';
 
-// It seems like you use "CommonEngine" - for this case your server.ts file should contain following:
+const serverDistFolder = dirname(fileURLToPath(import.meta.url));
+const browserDistFolder = resolve(serverDistFolder, '../browser');
+const indexHtml = join(serverDistFolder, 'index.server.html');
 
-import { CommonEngine } from '@angular/ssr/node';
-import { render } from '@netlify/angular-runtime/common-engine';
-
+const app = express();
+app.use();
+app.set('view engine', 'html');
 const commonEngine = new CommonEngine();
 
-export async function netlifyCommonEngineHandler(
-  request: Request,
-  context: any
-): Promise<Response> {
-  // Example API endpoints can be defined here.
-  // Uncomment and define endpoints as necessary.
-  // const pathname = new URL(request.url).pathname;
-  // if (pathname === '/api/hello') {
-  //   return Response.json({ message: 'Hello from the API' });
-  // }
+/**
+ * Example Express Rest API endpoints can be defined here.
+ * Uncomment and define endpoints as necessary.
+ *
+ * Example:
+ * ```ts
+ * app.get('/api/**', (req, res) => {
+ *   // Handle API request
+ * });
+ * ```
+ */
 
-  return await render(commonEngine);
-}
+/**
+ * Serve static files from /browser
+ */
+app.get(
+  '**',
+  express.static(browserDistFolder, {
+    maxAge: '1y',
+    index: 'index.html',
+  })
+);
+
+/**
+ * Handle all other requests by rendering the Angular application.
+ */
+app.get('**', (req, res, next) => {
+  const { protocol, originalUrl, baseUrl, headers } = req;
+
+  commonEngine
+    .render({
+      bootstrap,
+      documentFilePath: indexHtml,
+      url: `${protocol}://${headers.host}${originalUrl}`,
+      publicPath: browserDistFolder,
+      providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+    })
+    .then((html) => res.send(html))
+    .catch((err) => next(err));
+});
+
+/**
+ * Start the server if this module is the main entry point.
+ * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
+ */
+console.log(process.env['PORT']);
+const port = process.env['PORT'] || 4200;
+app.listen(port, () => {
+  console.log(`Node Express server listening on http://localhost:${port}`);
+});
+
+export default app;
