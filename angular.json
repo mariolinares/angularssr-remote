@@ -15,7 +15,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-architects/native-federation:build",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
 			"outputPath": "dist/angularremote",
             "index": "src/index.html",
@@ -37,11 +37,10 @@
           },
           "configurations": {
             "production": {
-              "target": "angularremote:esbuild:production"
+              "browser": "angularremote:esbuild:production"
             },
             "development": {
-              "target": "angularremote:esbuild:development",
-              "dev": true
+              "browser": "angularremote:esbuild:development"
             }
           },
           "defaultConfiguration": "production"
