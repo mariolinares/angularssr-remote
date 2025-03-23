@@ -20,7 +20,7 @@ export function app(): express.Express {
 
   const server = express();
   server.use(cors(corsOptions));
-  
+
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
   const indexHtml = join(serverDistFolder, 'index.server.html');
@@ -35,15 +35,19 @@ export function app(): express.Express {
   // Serve static files from /browser
   server.get(
     '**',
-    cors(corsOptions),
     express.static(browserDistFolder, {
       maxAge: '1y',
       index: 'index.html',
+      setHeaders: (res, path) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        
+      }
     })
   );
 
   // All regular routes use the Angular engine
   server.get('**', (req, res, next) => {
+    req.headers['access-control-allow-origin'] = "*";
     req.headers['Access-Control-Allow-Origin'] = 'https://angularssr-host.netlify.app';
     const { protocol, originalUrl, baseUrl, headers } = req;
 
