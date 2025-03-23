@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr/node';
 import express from 'express';
-const cors = require('cors'); 
+const cors = require('cors');
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './main.server';
@@ -9,14 +9,11 @@ import { access } from 'node:fs';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
-
   var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
     accessControlAllowOrigin: '*',
-    
   };
-
 
   const server = express();
   server.use(cors(corsOptions));
@@ -42,7 +39,10 @@ export function app(): express.Express {
         if (path.endsWith('.json')) {
           console.log('json');
         }
+
         res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Headers', '*');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
       },
     })
   );
@@ -50,6 +50,11 @@ export function app(): express.Express {
   // All regular routes use the Angular engine
   server.get('**', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
+
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(204); // No content
 
     commonEngine
       .render({
