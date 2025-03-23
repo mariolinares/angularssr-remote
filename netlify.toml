@@ -6,6 +6,5 @@ publish = "dist/angularremote/browser"
 directory = "dist/angularremote/server"
 node_bundler = "esbuild"
 external_node_modules = [
-  "@netlify/angular-runtime",
-  "graceful-fs"
+  "@netlify/angular-runtime"
 ]
