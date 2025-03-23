@@ -17,8 +17,9 @@
 				"build": {
 					"builder": "@angular-architects/native-federation:build",
 					"options": {
-						"ssr": true
-					},
+            "outputPath": "dist/angularremote",
+            "ssr": true
+          },
 					"configurations": {
 						"production": {
 							"target": "angularremote:esbuild:production"
