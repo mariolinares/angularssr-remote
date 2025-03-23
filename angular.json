@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-architects/native-federation:build",
           "options": {
-			"outputPath": "dist/angularremote/browser",
+			"outputPath": "dist/angularremote",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js", "es-module-shims"],
@@ -77,7 +77,7 @@
         "esbuild": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/angularremote/browser",
+            "outputPath": "dist/angularremote",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js", "es-module-shims"],
