@@ -11,14 +11,16 @@ import { access } from 'node:fs';
 export function app(): express.Express {
 
   var corsOptions = {
-    origin: 'https://angularssr-host.netlify.app',
+    origin: '*',
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-    accessControlAllowOrigin: 'https://angularssr-host.netlify.app',
+    accessControlAllowOrigin: '*',
+    
   };
 
 
   const server = express();
   server.use(cors(corsOptions));
+  
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
   const indexHtml = join(serverDistFolder, 'index.server.html');
