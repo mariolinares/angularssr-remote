@@ -38,19 +38,17 @@ export function app(): express.Express {
     express.static(browserDistFolder, {
       maxAge: '1y',
       index: 'index.html',
-      setHeaders: (req, res, path) => {
+      setHeaders: (res, path, stat) => {
         if (path.endsWith('.json')) {
-          console.log('jsonremote', req);
+          console.log('json');
         }
-        req.setHeader('origin', 'https://angularssr-host.netlify.app');
+        res.setHeader('Access-Control-Allow-Origin', '*');
       },
     })
   );
 
   // All regular routes use the Angular engine
   server.get('**', (req, res, next) => {
-    req.headers['access-control-allow-origin'] = "*";
-    req.headers['Access-Control-Allow-Origin'] = 'https://angularssr-host.netlify.app';
     const { protocol, originalUrl, baseUrl, headers } = req;
 
     commonEngine
