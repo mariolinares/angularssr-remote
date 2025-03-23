@@ -86,7 +86,7 @@
 						],
 						"scripts": [],
 						"server": "src/main.server.ts",
-						"prerender": false,
+						"prerender": true,
 						"ssr": {
 							"entry": "src/server.ts"
 						}
