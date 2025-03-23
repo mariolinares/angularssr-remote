@@ -5,6 +5,7 @@ const cors = require('cors');
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './main.server';
+import { access } from 'node:fs';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -12,6 +13,7 @@ export function app(): express.Express {
   var corsOptions = {
     origin: 'https://angularssr-host.netlify.app',
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+    accessControlAllowOrigin: 'https://angularssr-host.netlify.app',
   };
 
 
@@ -31,6 +33,7 @@ export function app(): express.Express {
   // Serve static files from /browser
   server.get(
     '**',
+    cors(corsOptions),
     express.static(browserDistFolder, {
       maxAge: '1y',
       index: 'index.html',
