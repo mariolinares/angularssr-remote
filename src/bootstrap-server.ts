@@ -1,13 +1,22 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr/node';
 import express from 'express';
+const cors = require('cors'); 
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './main.server';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
+
+  var corsOptions = {
+    origin: 'https://angularssr-host.netlify.app',
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  };
+
+
   const server = express();
+  server.use(cors(corsOptions));
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
   const indexHtml = join(serverDistFolder, 'index.server.html');
