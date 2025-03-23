@@ -1,19 +1,13 @@
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const cors = require("cors"); 
-// Error: server.ts doesn't seem to be Netlify compatible and is not known default. Please replace it with Netlify compatible server.ts.
+import { AngularAppEngine, createRequestHandler } from '@angular/ssr';
+import { getContext } from '@netlify/angular-runtime/context';
 
-// It seems like you use "CommonEngine" - for this case your server.ts file should contain following:
+const angularAppEngine = new AngularAppEngine();
 
-import { CommonEngine } from '@angular/ssr/node';
-import { render } from '@netlify/angular-runtime/common-engine';
-
-const commonEngine = new CommonEngine();
-
-export async function netlifyCommonEngineHandler(
-  request: Request,
-  context: any
+export async function netlifyAppEngineHandler(
+  request: Request
 ): Promise<Response> {
+  const context = getContext();
+
   // Example API endpoints can be defined here.
   // Uncomment and define endpoints as necessary.
   // const pathname = new URL(request.url).pathname;
@@ -21,5 +15,11 @@ export async function netlifyCommonEngineHandler(
   //   return Response.json({ message: 'Hello from the API' });
   // }
 
-  return await render(commonEngine);
+  const result = await angularAppEngine.handle(request, context);
+  return result || new Response('Not found', { status: 404 });
 }
+
+/**
+ * The request handler used by the Angular CLI (dev-server and during build).
+ */
+export const reqHandler = createRequestHandler(netlifyAppEngineHandler);

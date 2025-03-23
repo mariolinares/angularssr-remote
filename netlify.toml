@@ -1,0 +1,11 @@
+[build]
+command = "npm run build"
+publish = "dist/angularremote/browser"
+
+[functions]
+directory = "dist/angularremote/server"
+node_bundler = "esbuild"
+external_node_modules = [
+  "@netlify/angular-runtime",
+  "graceful-fs"
+]
