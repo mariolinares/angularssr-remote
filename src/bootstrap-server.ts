@@ -9,14 +9,10 @@ import { access } from 'node:fs';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
-  var corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-    accessControlAllowOrigin: '*',
-  };
+
 
   const server = express();
-  server.use(cors(corsOptions));
+  server.use(cors());
 
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -72,7 +68,7 @@ export function app(): express.Express {
 }
 
 function run(): void {
-  const port = process.env['PORT'] || 4000;
+  const port = process.env['PORT'] || 4201;
 
   // Start up the Node server
   const server = app();
